@@ -20,7 +20,7 @@ int main() {
     Fila *pronto = criarFila();
     Fila *espera = criarFila();
     Fila *execucao = criarFila();
-    Fila *finalizado = criarFila();
+    Fila *finalizados = criarFila();
     
     int valorquantum;
     int *pt_valorquantum = &valorquantum;
@@ -32,16 +32,49 @@ int main() {
         return -1;
     } 
 
+    fscanf(arq, "%d", pt_valorquantum);
     while(!feof(arq)) {
         if (fgets(linha, 50, arq) != NULL) {
-            lerArquivoProcessos(arq, pronto, &pt_valorquantum);
+            lerArquivoProcessos(arq, pronto);
         }
     }
     
-    imprimirElementos(pronto);
+    //imprimirElementos(pronto);
+    printf("valor_quantum : %d\n", valorquantum);
     fclose(arq);
     
-    printf("%d\n", valorquantum);
+    //___________________________________________ 
+    
+    mudarFila(pronto, execucao);
+
+    while (!filaestavazia(*execucao)) {
+        ProcessoEncadeado *aux = desenfileirar(execucao);
+        int tempo_restante = aux->tempo_de_execucao;
+    
+        while (tempo_restante > 0) {
+            int tempo_executado = (tempo_restante > valorquantum) ? valorquantum : tempo_restante;
+            sleep(tempo_executado);
+            tempo_restante -= tempo_executado;
+        }
+        
+        if (tempo_restante > 0) {
+            enfileirar(espera, aux->nome, tempo_restante);
+        } else {
+            enfileirar(finalizados, aux->nome, aux->tempo_de_execucao);
+        }
+    
+        mudarFila(espera, pronto);
+        mudarFila(pronto, execucao);
+    }
+    
+    
+    imprimirElementos(finalizados);
+    
+    esvaziarFila(pronto);
+    esvaziarFila(execucao);
+    esvaziarFila(espera);
+    esvaziarFila(finalizados);
+    
     
     
     return 0;

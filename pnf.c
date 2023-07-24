@@ -3,19 +3,16 @@
 #include <string.h>
 #include "pnf.h"
 
-void lerArquivoProcessos(FILE *arq, Fila *f1, int *valorquantum) {
+void lerArquivoProcessos(FILE *arq, Fila *f1) {
     for (int i = 0; !feof(arq); i++) {
-        if(i == 0) {
-            fscanf(arq, "%d\n", valorquantum);
-        } else {
-            char nome[20];
-            float tempo_de_execucao;
+        char nome[20];
+        float tempo_de_execucao;
 
-            fscanf(arq, "%s %f\n", nome, &tempo_de_execucao);
-            enfileirar(f1, nome, tempo_de_execucao);
-        }
+        fscanf(arq, "%s %f\n", nome, &tempo_de_execucao);
+        enfileirar(f1, nome, tempo_de_execucao);
 	}
 }
+
 Fila *criarFila() {
     Fila *novaFila = (Fila*) malloc(sizeof(Fila));
     novaFila->ini = novaFila->fim = NULL;
@@ -48,4 +45,29 @@ ProcessoEncadeado *desenfileirar(Fila *f) {
     ProcessoEncadeado *aux = f->ini;
     f->ini = aux->prox;
     return aux;
+}
+
+short int filaestavazia(Fila f1) {
+    if(f1.ini == NULL) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+void mudarFila(Fila *p1, Fila *p2) {
+    while(!filaestavazia(*p1)) {
+        ProcessoEncadeado *aux = desenfileirar(p1);
+        enfileirar(p2, aux->nome, aux->tempo_de_execucao);
+    }
+}
+
+void esvaziarFila(Fila *f1) {
+    ProcessoEncadeado *aux = f1->ini;
+    while(!filaestavazia(*f1)) {
+        ProcessoEncadeado *aux2 = aux;
+        aux = aux->prox;
+        free(aux2);
+    }
+    free(f1);
 }

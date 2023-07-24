@@ -15,10 +15,13 @@ typedef struct _fila {
     ProcessoEncadeado *fim;
 } Fila;
 
-void lerArquivoProcessos(FILE* , Fila*, int*);
+void lerArquivoProcessos(FILE* , Fila*);
 ProcessoEncadeado *criarNovoNo(char[], float);
 void enfileirar(Fila*, char[], float);
 ProcessoEncadeado *desenfileirar(Fila *f);
 Fila *criarFila();
+void mudarFila(Fila *p1, Fila *p2);
+short int filaestavazia(Fila);
+void esvaziarFila(Fila *f1);
 
 #endif
