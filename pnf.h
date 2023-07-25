@@ -23,5 +23,6 @@ Fila *criarFila();
 void mudarFila(Fila *p1, Fila *p2);
 short int filaestavazia(Fila);
 void esvaziarFila(Fila *f1);
+void imprimirElementos(Fila*, Fila*, Fila*, Fila*);
 
 #endif

@@ -13,8 +13,9 @@ void lerArquivoProcessos(FILE *arq, Fila *f1) {
 	}
 }
 
-Fila *criarFila() {
+Fila *criarFila(char nome[]) {
     Fila *novaFila = (Fila*) malloc(sizeof(Fila));
+    strcpy(novaFila->nome, nome);
     novaFila->ini = novaFila->fim = NULL;
     return novaFila; 
 }
@@ -32,11 +33,10 @@ ProcessoEncadeado *criarNovoNo(char nome[], float tempo_de_execucao) {
 void enfileirar(Fila *f, char nome[], float tempo_de_execucao) {
     ProcessoEncadeado *novo = criarNovoNo(nome, tempo_de_execucao);
     if (novo != NULL) {
-        if (f->fim == NULL) { // Verificar se a fila está vazia
+        if (f->ini == NULL) { // Verificar se a fila está vazia
             f->ini = f->fim = novo; // Atualizar ini e fim
         } else {
-            f->fim->prox = novo;
-            f->fim = novo;
+            f->fim = f->fim->prox = novo;
         }
     }
 }
@@ -56,11 +56,12 @@ short int filaestavazia(Fila f1) {
 }
 
 void mudarFila(Fila *p1, Fila *p2) {
-    while(!filaestavazia(*p1)) {
+    while (!filaestavazia(*p1)) {
         ProcessoEncadeado *aux = desenfileirar(p1);
         enfileirar(p2, aux->nome, aux->tempo_de_execucao);
     }
 }
+
 
 void esvaziarFila(Fila *f1) {
     ProcessoEncadeado *aux = f1->ini;
@@ -70,4 +71,70 @@ void esvaziarFila(Fila *f1) {
         free(aux2);
     }
     free(f1);
+}
+
+void imprimirElementos(Fila *f1, Fila *f2, Fila *f3, Fila *f4) {
+    ProcessoEncadeado *aux;
+    
+    printf("Estado atual da fila de processos:\n");
+    
+    aux = f1->ini;
+    if(aux != NULL) {
+        printf("%s: ", f1->nome);
+        while(aux != NULL) {
+            if (aux->prox == NULL) {
+                printf(" %s = %.f\n", aux->nome, aux->tempo_de_execucao);
+            } else {
+                printf(" %s = %.f ← ", aux->nome, aux->tempo_de_execucao);
+            }
+            aux = aux->prox;
+        }
+    } else {
+        printf("%s: vazia\n", f1->nome);
+    }
+    
+    aux = f2->ini;
+    if(aux != NULL) {
+        printf("%s: ", f2->nome);
+        while(aux != NULL) {
+            if (aux->prox == NULL) {
+                printf(" %s = %.f\n", aux->nome, aux->tempo_de_execucao);
+            } else {
+                printf(" %s = %.f ← ", aux->nome, aux->tempo_de_execucao);
+            }
+            aux = aux->prox;
+        }
+    } else {
+        printf("%s: vazia\n", f2->nome);
+    }
+    
+    aux = f3->ini;
+    if(aux != NULL) {
+        printf("%s: ", f3->nome);
+        while(aux != NULL) {
+            if (aux->prox == NULL) {
+                printf(" %s = %.f\n", aux->nome, aux->tempo_de_execucao);
+            } else {
+                printf(" %s = %.f ← ", aux->nome, aux->tempo_de_execucao);
+            }
+            aux = aux->prox;
+        }
+    } else {
+        printf("%s: vazia\n", f3->nome);
+    }
+    
+    aux = f4->ini;
+    if(aux != NULL) {
+        printf("%s: ", f4->nome);
+        while(aux != NULL) {
+            if (aux->prox == NULL) {
+                printf(" %s = %.f\n", aux->nome, aux->tempo_de_execucao);
+            } else {
+                printf(" %s = %.f ← ", aux->nome, aux->tempo_de_execucao);
+            }
+            aux = aux->prox;
+        }
+    } else {
+        printf("%s: vazia\n", f4->nome);
+    }
 }
