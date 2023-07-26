@@ -193,7 +193,7 @@ int main() {
 
     while (!filaestavazia(*pronto)) {
         mudarFila(pronto, execucao);
-        printf("Processos foram adicionados a fila de execucao");
+        printf("Processos foram adicionados a fila de execucao\n");
         
         while (!filaestavazia(*execucao)) {
             imprimirElementos(pronto, espera, execucao, finalizados);
