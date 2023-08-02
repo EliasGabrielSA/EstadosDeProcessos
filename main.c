@@ -173,64 +173,68 @@ int main() {
     scanf("%s", path);
     arq = fopen(path, "rt");
 
-    if (arq == NULL) {
-        return -1;
-    } 
-
-    fscanf(arq, "%d", pt_valorquantum);
-    while(!feof(arq)) {
-        if (fgets(linha, 50, arq) != NULL) {
-            lerArquivoProcessos(arq, pronto);
-        }
-    }
-    
-    fclose(arq);
-    
-    imprimirElementos(pronto, espera, execucao, finalizados);
-    printf("\nQuantum : %d\n\n", valorquantum);
-    printf("− − − − − − − − −− > Iniciando execucao\n");
-    
-
-    while (!filaestavazia(*pronto)) {
-        mudarFila(pronto, execucao);
-        printf("Processos foram adicionados a fila de execucao\n");
+    if (arq != NULL) {
         
-        while (!filaestavazia(*execucao)) {
-            imprimirElementos(pronto, espera, execucao, finalizados);
-            
-            ProcessoEncadeado *aux = desenfileirar(execucao);
-            
-            float aux_execucao = aux->tempo_de_execucao - valorquantum;
-            printf("%s esta executando...\n", aux->nome);
-            
-            usleep(valorquantum * 1000000);
+        fscanf(arq, "%d", pt_valorquantum);
+        while(!feof(arq)) {
+            if (fgets(linha, 50, arq) != NULL) {
+                lerArquivoProcessos(arq, pronto);
+            }
+        }
+
+        fclose(arq);
     
-            if (aux_execucao > 0) {
-                printf("Quantum expirou, %s sofreu preempcao\n\n", aux->nome);
-                enfileirar(espera, aux->nome, aux_execucao);
-                printf("%s foi adicionado a fila de espera\n", aux->nome);
-                printf("\n− − − − − − − − − − − − − − − − − − − − − − − − − − − − − − − − − − − − −\n");
-            } else {
-                enfileirar(finalizados, aux->nome, 0);
-                printf("%s terminou a execucao, %s foi adicionado a fila de finalizados\n\n", aux->nome, aux->nome);
-                printf("\n− − − − − − − − − − − − − − − − − − − − − − − − − − − − − − − − − − − − −\n");
+        imprimirElementos(pronto, espera, execucao, finalizados);
+        printf("\nQuantum : %d\n\n", valorquantum);
+        printf("−−−−−−−−−− > Iniciando execucao\n");
+        
+
+        while (!filaestavazia(*pronto)) {
+            mudarFila(pronto, execucao);
+            printf("Processos foram adicionados a fila de execucao\n");
+            
+            while (!filaestavazia(*execucao)) {
+                imprimirElementos(pronto, espera, execucao, finalizados);
+                
+                ProcessoEncadeado *aux = desenfileirar(execucao);
+                
+                float aux_execucao = aux->tempo_de_execucao - valorquantum;
+                printf("%s esta executando...\n", aux->nome);
+                
+                usleep(valorquantum);
+        
+                if (aux_execucao > 0) {
+                    printf("Quantum expirou, %s sofreu preempcao\n\n", aux->nome);
+                    enfileirar(espera, aux->nome, aux_execucao);
+                    printf("%s foi adicionado a fila de espera\n", aux->nome);
+                    printf("\n−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−\n");
+                } else {
+                    enfileirar(finalizados, aux->nome, 0);
+                    printf("%s terminou a execucao, %s foi adicionado a fila de finalizados\n\n", aux->nome, aux->nome);
+                    printf("\n−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−\n");
+                }
+            }
+            
+            if(!filaestavazia(*espera)) {
+                printf("A fila de execucao esta vazia, movendo processos para a fila de prontos\n");
+                mudarFila(espera, pronto);
             }
         }
         
-        if(!filaestavazia(*espera)) {
-            printf("A fila de execucao esta vazia, movendo processos para a fila de prontos\n");
-            mudarFila(espera, pronto);
-        }
+        imprimirElementos(pronto, espera, execucao, finalizados);
+        printf("Nao ha mais processos a serem executados\n");
+        printf("−−−−−−−−−− > Simulacao finalizada\n");
+        
+        esvaziarFila(pronto);
+        esvaziarFila(execucao);
+        esvaziarFila(espera);
+        esvaziarFila(finalizados);
+                
+        return 0;
+    }  else {
+        printf("Arquivo nao encontrado.\n");
+        return -1;
     }
+
     
-    imprimirElementos(pronto, espera, execucao, finalizados);
-    printf("Nao ha mais processos a serem executados\n");
-    printf("− − − − − − − − −− > Simulacao finalizada\n");
-    
-    esvaziarFila(pronto);
-    esvaziarFila(execucao);
-    esvaziarFila(espera);
-    esvaziarFila(finalizados);
-            
-    return 0;
 }
