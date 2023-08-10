@@ -83,11 +83,9 @@ void mudarFila(Fila *p1, Fila *p2) {
 
 
 void esvaziarFila(Fila *f1) {
-    ProcessoEncadeado *aux = f1->ini;
     while(!filaestavazia(*f1)) {
-        ProcessoEncadeado *aux2 = aux;
-        aux = aux->prox;
-        free(aux2);
+        ProcessoEncadeado*aux = desenfileirar(f1);
+        free(aux);
     }
     free(f1);
 }
@@ -227,12 +225,12 @@ int main() {
         
         imprimirElementos(pronto, espera, execucao, finalizados);
         printf("Nao ha mais processos a serem executados\n");
-        printf("−−−−−−−−−−> Simulacao finalizada\n");
+        printf("----------> Simulacao finalizada\n");
         
-        free(pronto);
-        free(execucao);
-        free(espera);
-        free(finalizados);
+        esvaziarFila(pronto);
+        esvaziarFila(execucao);
+        esvaziarFila(espera);
+        esvaziarFila(finalizados);
                 
         return 0;
     }  else {
